@@ -63,9 +63,9 @@ func (a *PlatformCredsCheck) Generate(dependencies asset.Parents) error {
 		}
 	case ibmcloud.Name:
 		_, err = ibmcloudconfig.NewClient()
-		// meh ... is there a way to name this session ibmcloud? but have the installconfig Name as powervs?
+	// meh ... is there a way to name this session ibmcloud? but have the installconfig Name as powervs?
 	case powervs.Name:
-		_, err = powervsconfig.GetSession()
+		_, err = powervsconfig.GetSession(ic.Config.PowerVS)
 		if err != nil {
 			return errors.Wrap(err, "creating IBM Cloud session")
 		}

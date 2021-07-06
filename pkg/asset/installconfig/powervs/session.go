@@ -8,6 +8,9 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/IBM-Cloud/power-go-client/ibmpisession"
+	"github.com/sirupsen/logrus"
+
+	types "github.com/openshift/installer/pkg/types/powervs"
 )
 
 var (
@@ -41,8 +44,8 @@ type Session struct {
      3) let the password env var be the IAMToken? (Going with this atm since it's how I started)
      4) put it into Platform {userid: , iamtoken: , ...}
 */
-func GetSession() (*Session, error) {
-	s, err := getPISession()
+func GetSession(ic *types.Platform) (*Session, error) {
+	s, err := getPISession(ic)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to load credentials")
 	}
@@ -53,8 +56,7 @@ func GetSession() (*Session, error) {
 /*
 //  https://github.com/IBM-Cloud/power-go-client/blob/master/ibmpisession/ibmpowersession.go
 */
-func getPISession() (*ibmpisession.IBMPISession, error) {
-
+func getPISession(ic *types.Platform) (*ibmpisession.IBMPISession, error) {
 	var (
 		id, passwd, region, zone string
 	)
@@ -74,14 +76,24 @@ func getPISession() (*ibmpisession.IBMPISession, error) {
 		}
 		if len(region) == 0 {
 			region = r2
+			}
+		}
+	}
+	if len(region) == 0 {
+		logrus.Infof("No region specified. Using default region")
+	} else {
+		logrus.Debugf("[DEBUG] Using region %s", region)
+	}
+
+	zone = ic.Zone
+	if len(zone) == 0 {
+		// @TODO: query if region is multi-zone? or just pass through err...
+		if zone = os.Getenv("IBMCLOUD_ZONE"); len(zone) == 0 {
+			zone = region
+			logrus.Infof("No zone specified. Using region")
 		}
 	}
 
-	if zone = os.Getenv("IBMCLOUD_ZONE"); len(zone) == 0 {
-		zone = region
-	}
-
-	// @TOOD: query if region is multi-zone? or just pass through err...
 	// @TODO: pass through debug?
 	return ibmpisession.New(passwd, region, false, defSessionTimeout, id, zone)
 }
