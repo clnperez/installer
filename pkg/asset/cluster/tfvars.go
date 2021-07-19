@@ -637,7 +637,7 @@ func (t *TerraformVariables) Generate(parents asset.Parents) error {
 			Data:     data,
 		})
 	case powervs.Name:
-		session, err := powervsconfig.GetSession()
+		session, err := powervsconfig.GetSession(installConfig.Config.Platform.PowerVS)
 		if err != nil {
 			return err
 		}

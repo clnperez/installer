@@ -23,7 +23,7 @@ var (
 
 // Session is an object representing a session for the IBM Power VS API.
 type Session struct {
-	session *ibmpisession.IBMPISession
+	Session *ibmpisession.IBMPISession
 }
 
 // GetSession returns an IBM Cloud session by using credentials found in default locations in order:
@@ -50,7 +50,7 @@ func GetSession(ic *types.Platform) (*Session, error) {
 		return nil, errors.Wrap(err, "failed to load credentials")
 	}
 
-	return &Session{session: s}, nil
+	return &Session{Session: s}, nil
 }
 
 /*
