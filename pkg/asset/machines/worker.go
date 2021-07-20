@@ -3,10 +3,11 @@ package machines
 import (
 	"context"
 	"fmt"
-	"github.com/openshift/installer/pkg/asset/machines/powervs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/openshift/installer/pkg/asset/machines/powervs"
 
 	"github.com/ghodss/yaml"
 	baremetalapi "github.com/metal3-io/cluster-api-provider-baremetal/pkg/apis"
@@ -162,6 +163,15 @@ func defaultKubevirtMachinePoolPlatform() kubevirttypes.MachinePool {
 		CPU:         4,
 		Memory:      "16G",
 		StorageSize: "120Gi",
+	}
+}
+
+func defaultPowerVSMachinePoolPlatform() powervstypes.MachinePool {
+	return powervstypes.MachinePool{
+		Memory:     32,
+		Processors: 0.5,
+		ProcType:   "shared",
+		SysType:    "s922",
 	}
 }
 

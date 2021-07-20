@@ -76,7 +76,6 @@ func getPISession(ic *types.Platform) (*ibmpisession.IBMPISession, error) {
 		}
 		if len(region) == 0 {
 			region = r2
-			}
 		}
 	}
 	if len(region) == 0 {
